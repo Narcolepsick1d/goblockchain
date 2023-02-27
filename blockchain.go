@@ -56,7 +56,7 @@ func NewBlock(nonce int, prevHash [32]byte, transaction []*Transaction) *Block {
 }
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-	return sha256.Sum256([]byte(m))
+	return sha256.Sum256(m)
 }
 func (b *Block) Print() {
 	fmt.Printf("timestamp		%d\n", b.timestamp)
@@ -143,6 +143,23 @@ func (bc *Blockchain) AddTransaction(sender, recipient string, value float32) {
 	t := NewTransaction(sender, recipient, value)
 	bc.transactionPool = append(bc.transactionPool, t)
 }
+func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
+	var totalAmount float32 = 0.0
+	for _, b := range bc.chain {
+		for _, t := range b.transaction {
+			value := t.value
+			if blockchainAddress == t.recipientBlockchainAddress {
+				totalAmount += value
+
+			}
+			if blockchainAddress == t.senderBlockchainAddress {
+				totalAmount -= value
+			}
+		}
+
+	}
+	return totalAmount
+}
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"sender_blockchain_address"`
@@ -169,4 +186,7 @@ func main() {
 	blockchain.Mining()
 	blockchain.Print()
 
+	fmt.Printf("my %.1f\n:", blockchain.CalculateTotalAmount("my_blockchain_address"))
+	fmt.Printf("C %.1f\n:", blockchain.CalculateTotalAmount("C"))
+	fmt.Printf("D %.1f\n:", blockchain.CalculateTotalAmount("D"))
 }
