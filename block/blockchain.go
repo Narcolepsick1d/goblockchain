@@ -1,4 +1,4 @@
-package main
+package block
 
 import (
 	"crypto/sha256"
@@ -91,12 +91,8 @@ func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
-func init() {
-	log.SetPrefix("Blockchain: ")
-}
 func NewTransaction(sender, recipient string, value float32) *Transaction {
 	return &Transaction{sender, recipient, value}
-
 }
 func (t *Transaction) Print() {
 	fmt.Printf("%s\n", strings.Repeat("-", 40))
@@ -170,23 +166,4 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 		Recipient: t.recipientBlockchainAddress,
 		Value:     t.value,
 	})
-}
-func main() {
-	myBlockchainAddress := "my_blockchain_address"
-
-	blockchain := NewBlockchain(myBlockchainAddress)
-	blockchain.Print()
-
-	blockchain.AddTransaction("A", "B", 1)
-	blockchain.Mining()
-	blockchain.Print()
-
-	blockchain.AddTransaction("C", "D", 2.0)
-	blockchain.AddTransaction("X", "Y", 3.0)
-	blockchain.Mining()
-	blockchain.Print()
-
-	fmt.Printf("my %.1f\n:", blockchain.CalculateTotalAmount("my_blockchain_address"))
-	fmt.Printf("C %.1f\n:", blockchain.CalculateTotalAmount("C"))
-	fmt.Printf("D %.1f\n:", blockchain.CalculateTotalAmount("D"))
 }
