@@ -30,7 +30,7 @@ func (ws *WalletServer) Index(w http.ResponseWriter, r *http.Request) {
 		t, _ := template.ParseFiles(path.Join(tempDir, "index.html"))
 		t.Execute(w, "")
 	default:
-		log.Printf("error: invalid http method")
+		log.Printf("error: invalid http method ")
 	}
 }
 func (ws *WalletServer) Run() {
