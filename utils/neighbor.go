@@ -11,9 +11,10 @@ import (
 
 func IsFoundHost(host string, port uint16) bool {
 	target := fmt.Sprintf("%s:%d", host, port)
+
 	_, err := net.DialTimeout("tcp", target, 1*time.Second)
 	if err != nil {
-		fmt.Printf("%s %v", target, err)
+		fmt.Printf("%s %v\n", target, err)
 		return false
 	}
 	return true
@@ -43,16 +44,15 @@ func FindNeighbors(myHost string, myPort uint16, startIp uint8, endIp uint8, sta
 	}
 	return neighbors
 }
+
 func GetHost() string {
 	hostname, err := os.Hostname()
 	if err != nil {
 		return "127.0.0.1"
 	}
-
 	address, err := net.LookupHost(hostname)
 	if err != nil {
 		return "127.0.0.1"
 	}
-
 	return address[0]
 }
