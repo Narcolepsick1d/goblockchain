@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"net"
-	"os"
 	"regexp"
 	"strconv"
 	"time"
@@ -45,14 +45,14 @@ func FindNeighbors(myHost string, myPort uint16, startIp uint8, endIp uint8, sta
 	return neighbors
 }
 
-func GetHost() string {
-	hostname, err := os.Hostname()
+func GetHost() net.IP {
+	conn, err := net.Dial("udp", "127.0.0.1:80")
 	if err != nil {
-		return "127.0.0.1"
+		log.Fatal(err)
 	}
-	address, err := net.LookupHost(hostname)
-	if err != nil {
-		return "127.0.0.1"
-	}
-	return address[0]
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP
 }
